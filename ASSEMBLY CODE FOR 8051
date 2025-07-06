@@ -1,0 +1,177 @@
+ORG 0000H
+MAIN:
+    MOV TMOD, #10H        
+    CLR P1.0              
+    CLR P1.7              
+    ACALL DELAY20US       
+    SETB P1.7             
+    ACALL DELAY10US       
+    CLR P1.7              
+
+WAIT_ECHO_HIGH:
+    JB P1.6, MEASURE_ECHO 
+    SJMP WAIT_ECHO_HIGH
+
+MEASURE_ECHO:
+    CLR TF1
+    MOV TH1, #0
+    MOV TL1, #0
+    SETB TR1             
+
+WAIT_ECHO_LOW:
+    JNB P1.6, STOP_TIMER
+    JNB TF1, WAIT_ECHO_LOW 
+
+STOP_TIMER:
+    CLR TR1
+    MOV A, TH1
+    CJNE A, #0CH, CHECK_DISTANCE 
+
+    ACALL SERVO_105
+    ACALL DELAY_3S
+    ACALL SERVO_0
+    SJMP MAIN
+
+CHECK_DISTANCE:
+    SJMP MAIN
+
+DELAY10US:
+    MOV R2, #2
+D10_LOOP:
+    DJNZ R2, D10_LOOP
+    RET
+
+; 20us delay
+DELAY20US:
+    MOV R2, #5
+D20_LOOP:
+    DJNZ R2, D20_LOOP
+    RET
+
+
+SERVO_90:
+    MOV R3, #50          
+S90_LOOP:
+    SETB P1.0
+    ACALL DELAY_1_5MS
+    CLR P1.0
+    ACALL DELAY_18_5MS
+    DJNZ R3, S90_LOOP
+    RET
+
+SERVO_105:
+    MOV R3, #50
+S105_LOOP:
+    SETB P1.0
+    ACALL DELAY_1_8MS
+    CLR P1.0
+    ACALL DELAY_18_2MS
+    DJNZ R3, S105_LOOP
+    RET
+
+
+SERVO_0:
+    MOV R3, #50
+S0_LOOP:
+    SETB P1.0
+    ACALL DELAY_1MS
+    CLR P1.0
+    ACALL DELAY_19MS
+    DJNZ R3, S0_LOOP
+    RET
+
+
+DELAY_1MS:
+    MOV TMOD, #10H
+    MOV TH1, #0xFC       
+    MOV TL1, #0x66
+    CLR TF1
+    SETB TR1
+WAIT1:
+    JNB TF1, WAIT1
+    CLR TR1
+    RET
+
+
+DELAY_1_5MS:
+    MOV TMOD, #10H
+    MOV TH1, #0xFA
+    MOV TL1, #0x24
+    CLR TF1
+    SETB TR1
+WAIT15:
+    JNB TF1, WAIT15
+    CLR TR1
+    RET
+
+
+DELAY_1_8MS:
+    MOV TMOD, #10H
+    MOV TH1, #0xF9
+    MOV TL1, #0x5E
+    CLR TF1
+    SETB TR1
+WAIT18:
+    JNB TF1, WAIT18
+    CLR TR1
+    RET
+
+
+DELAY_0_2MS:
+    MOV TMOD, #10H
+    MOV TH1, #0xFF
+    MOV TL1, #0x1A
+    CLR TF1
+    SETB TR1
+WAIT02:
+    JNB TF1, WAIT02
+    CLR TR1
+    RET
+
+
+DELAY_18_2MS:
+    MOV R2, #18
+    ACALL DELAY_1MS
+    ACALL DELAY_0_2MS
+    RET
+
+
+DELAY_18_5MS:
+    MOV R2, #18
+    ACALL DELAY_1MS
+    ACALL DELAY_1MS
+    ACALL DELAY_0_5MS
+    RET
+
+
+DELAY_19MS:
+    MOV R2, #19
+D19_LOOP:
+    ACALL DELAY_1MS
+    DJNZ R2, D19_LOOP
+    RET
+
+
+DELAY_0_5MS:
+    MOV TMOD, #10H
+    MOV TH1, #0xFE
+    MOV TL1, #0x33
+    CLR TF1
+    SETB TR1
+WAIT05:
+    JNB TF1, WAIT05
+    CLR TR1
+    RET
+
+
+DELAY_3S:
+    MOV R4, #30
+D3S_LOOP1:
+    MOV R5, #100
+D3S_LOOP2:
+    ACALL DELAY_1MS
+    DJNZ R5, D3S_LOOP2
+    DJNZ R4, D3S_LOOP1
+    RET
+
+END
