@@ -4,7 +4,6 @@
 
 > 🧠 "Smarter waste. Cleaner space."
 
----
 
 ## 🚀 Features
 
@@ -16,7 +15,6 @@
 - 📱 **Mobile Integration** – Clean and intuitive interface on the Blynk IoT app.
 - ⚡ **Efficient & Scalable** – Ready for home, office, or smart city integrations.
 
----
 
 ## 🔧 Hardware Used
 
@@ -29,8 +27,6 @@
 | Power Supply      | 5V regulated power                          |
 | Blynk App         | Real-time trash level display                |
 
----
-
 ## 🛠️ How It Works
 
 1. ✋ **Wave Detection** (by 8051):  
@@ -42,7 +38,6 @@
 3. 📲 **Live Dashboard**:  
    Blynk app displays current trash status on your smartphone.
 
----
 
 ## 📲 Blynk App Setup
 
